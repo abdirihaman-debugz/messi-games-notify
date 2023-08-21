@@ -1,6 +1,9 @@
 # messi-games-notify
 Notifies the user of any Messi games or reports related to him.
 
+** to get up and running with this scraper do: 
+    pip install requirements.txt
+    and then run messiGamesNotify.py
 
 add email/mobile phone notifiy component
 add news component as well.
