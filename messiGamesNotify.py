@@ -41,7 +41,7 @@ def divide_chunks(l, n):
 myTable = PrettyTable(["The Team InterMiami is facing", "The Date", "UTC TIME"]) #future work - add library to change UTC to current time.
 
 #Adds the data to the table.
-x = list(divide_chunks(dataFromXpath, 3))
-myTable.add_rows(x)
+dataRows = list(divide_chunks(dataFromXpath, 3))
+myTable.add_rows(dataRows)
 
 print(myTable)
