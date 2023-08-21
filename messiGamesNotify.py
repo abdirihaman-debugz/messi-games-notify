@@ -2,11 +2,13 @@ import requests
 from lxml import etree
 from bs4 import BeautifulSoup
 from prettytable import PrettyTable
+from datetime import datetime
 
-
+#Get's the current month & appends it to the URL 
+month = datetime.now().strftime("%B")
 
 #Fox sports website that pull the inter-miami team schedule (when I scrape I just get the current months schedule)
-URL  = "https://www.foxsports.com/soccer/inter-miami-cf-team-schedule"
+URL  = "https://www.foxsports.com/soccer/inter-miami-cf-team-schedule?month=" + str(month)
 
 #mandatory libraries I am using to extract the html & dom tree so I can use look for specific Xpaths
 page = requests.get(URL)
