@@ -5,8 +5,8 @@ Notifies the user of any Messi games or reports related to him.
     pip install requirements.txt
     and then run messiGamesNotify.py
 
-add email/mobile phone notifiy component
-add news component as well.
+- add an email or phone notification component
+- add a news component
 
-the plan is to make a github actions part and it runs twice a month to notify the user of the games going on it that month.
+The plan is to make a github actions part and it runs twice a month to notify the user of the games going on it that month.
 

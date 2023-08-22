@@ -2,7 +2,7 @@ import requests
 from lxml import etree
 from bs4 import BeautifulSoup
 from prettytable import PrettyTable
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Get's the current month & appends it to the URL 
 month = datetime.now().strftime("%B")
@@ -10,11 +10,17 @@ month = datetime.now().strftime("%B")
 # Fox sports website that pull the inter-miami team schedule (when I scrape I just get the current months schedule)
 URL  = "https://www.foxsports.com/soccer/inter-miami-cf-team-schedule?month=" + month
 
-# mandatory libraries I am using to extract the html & dom tree so I can use look for specific Xpaths
+# Mandatory libraries I am using to extract the html & dom tree so I can use look for specific Xpaths
 page = requests.get(URL)
 soup = BeautifulSoup(page.text, "html.parser")
 dom =  etree.HTML(str(soup))
 
+# Converts the UTC time scraped from the web to local time and in this case pacific time zone so it minuses 7 hours
+def to_local_datetime(utc_dt):
+ 
+    my_date = datetime.strptime(utc_dt, "%I:%M%p")
+    
+    return ((my_date - timedelta(hours=7)).time()).strftime("%I:%M %p")
 
 i = 1
 dataFromXpath=[]
@@ -27,10 +33,12 @@ while(True):
         gameDate = dom.xpath('//*[@id="table-1"]/tbody/' +trdata+  '/td[1]/div/text()')[0].strip()
         dataFromXpath.append(gameDate)
         gameTime = dom.xpath('//*[@id="table-1"]/tbody/' +trdata+ '/td[3]/div/a/text()')[0].strip()
-        dataFromXpath.append(gameTime)        
+        dataFromXpath.append(to_local_datetime(gameTime))        
         i+=1
     except IndexError:
         break
+
+
 # Got this from stackoverflow, but it turns my list of data I scraped from the website into sublists of the number of items I want.
 # I'm doing this because I want the data to be formatted into a readable table later
 def divide_chunks(l, n): 
@@ -40,7 +48,7 @@ def divide_chunks(l, n):
 
 # We are using a prettyTable library to create a nice table
 # this creates the headers for table.
-dataTable = PrettyTable(["The Team InterMiami is facing", "The Date", "UTC TIME"]) #future work - add library to change UTC to current time.
+dataTable = PrettyTable(["The Team InterMiami is facing", "Game Date", "GAME TIME"])
 
 # Adds the data to the table.
 dataRows = list(divide_chunks(dataFromXpath, 3))
@@ -54,3 +62,4 @@ try:
         print ("*******************************************************************" + " LET's GOO!!! & HAPPY WATCHING " + "*******************************************************************")
 except:
     print ("*******************************************************************" + "SORRY SCRAPPER NEEDS UPDATING OR IS BROKEN" + "*******************************************************************")
+
