@@ -3,6 +3,8 @@ from lxml import etree
 from bs4 import BeautifulSoup
 from prettytable import PrettyTable
 from datetime import datetime, timedelta
+import smtplib, ssl
+import os
 
 # Get's the current month & appends it to the URL 
 month = datetime.now().strftime("%B")
@@ -54,12 +56,27 @@ dataTable = PrettyTable(["The Team InterMiami is facing", "Game Date", "GAME TIM
 dataRows = list(divide_chunks(dataFromXpath, 3))
 dataTable.add_rows(dataRows)
 
+#sending an email so email related info
+port = 465
+smtp_server = "smtp.gmail.com"
+USER_EMAIL = os.environ.get("USER_EMAIL")
+USER_PASSWORD = os.environ.get("USER_PASSWORD")
+context = ssl.create_default_context()
+server = smtplib.SMTP_SSL(smtp_server, port, context=context)
+server.login(USER_EMAIL, USER_PASSWORD)
+
+
 try:
     ## Might be a poor man's solution but, this is my way of checking if the table actually has data when printing or if the scrapper is broken.
     if dataTable[0][0]:
         print ("*******************************************************************" + " INTER-MIAMI'S SCHEDULE " + "*******************************************************************")
         print(dataTable)
+        server.sendmail(USER_EMAIL, USER_EMAIL, dataTable)
         print ("*******************************************************************" + " LET's GOO!!! & HAPPY WATCHING " + "*******************************************************************")
 except:
     print ("*******************************************************************" + "SORRY SCRAPPER NEEDS UPDATING OR IS BROKEN" + "*******************************************************************")
+
+
+
+
 
