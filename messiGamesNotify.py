@@ -56,7 +56,7 @@ dataTable = PrettyTable(["The Team InterMiami is facing", "Game Date", "GAME TIM
 dataRows = list(divide_chunks(dataFromXpath, 3))
 dataTable.add_rows(dataRows)
 
-#sending an email so email related info
+#sending an email with table in it
 port = 465
 smtp_server = "smtp.gmail.com"
 USER_EMAIL = os.environ.get("USER_EMAIL")
@@ -64,17 +64,10 @@ USER_PASSWORD = os.environ.get("USER_PASSWORD")
 context = ssl.create_default_context()
 server = smtplib.SMTP_SSL(smtp_server, port, context=context)
 server.login(USER_EMAIL, USER_PASSWORD)
+server.sendmail(USER_EMAIL, USER_EMAIL, dataTable.get_json_string)
 
-
-try:
-    ## Might be a poor man's solution but, this is my way of checking if the table actually has data when printing or if the scrapper is broken.
-    if dataTable[0][0]:
-        print ("*******************************************************************" + " INTER-MIAMI'S SCHEDULE " + "*******************************************************************")
-        print(dataTable)
-        server.sendmail(USER_EMAIL, USER_EMAIL, dataTable)
-        print ("*******************************************************************" + " LET's GOO!!! & HAPPY WATCHING " + "*******************************************************************")
-except:
-    print ("*******************************************************************" + "SORRY SCRAPPER NEEDS UPDATING OR IS BROKEN" + "*******************************************************************")
+# printing out so make sure we can see the data in the github actions pipeline 
+print(dataTable.get_json_string)
 
 
 
