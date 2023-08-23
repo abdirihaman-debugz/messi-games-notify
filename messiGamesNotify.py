@@ -64,7 +64,7 @@ USER_PASSWORD = os.environ.get("USER_PASSWORD")
 context = ssl.create_default_context()
 server = smtplib.SMTP_SSL(smtp_server, port, context=context)
 server.login(USER_EMAIL, USER_PASSWORD)
-server.sendmail(USER_EMAIL, USER_EMAIL, dataTable.get_formatted_string)
+server.sendmail(USER_EMAIL, USER_EMAIL, dataTable)
 
 # printing out so make sure we can see the data in the github actions pipeline 
 print(dataTable.get_formatted_string)
