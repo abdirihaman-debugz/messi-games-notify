@@ -3,9 +3,10 @@ from lxml import etree
 from bs4 import BeautifulSoup
 from prettytable import PrettyTable
 from datetime import datetime, timedelta
-import smtplib, ssl
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import os
-
 # Get's the current month & appends it to the URL 
 month = datetime.now().strftime("%B")
 
@@ -57,14 +58,50 @@ dataRows = list(divide_chunks(dataFromXpath, 3))
 dataTable.add_rows(dataRows)
 
 #sending an email with table in it
-port = 465
-smtp_server = "smtp.gmail.com"
+
+# Convert the PrettyTable to HTML format
+table_html = dataTable.get_html_string()
+
+# Email configuration
 USER_EMAIL = os.environ.get("USER_EMAIL")
 USER_PASSWORD = os.environ.get("USER_PASSWORD")
-context = ssl.create_default_context()
-server = smtplib.SMTP_SSL(smtp_server, port, context=context)
-server.login(USER_EMAIL, USER_PASSWORD)
-server.sendmail(USER_EMAIL, USER_EMAIL, dataTable)
+sender_email = USER_EMAIL
+receiver_email = USER_EMAIL  # Use the same email address for sender and receiver
+password = USER_PASSWORD
+subject = "Inter Miami Schedule"
+
+# Create a MIMEText object for the email content
+email_body = MIMEMultipart()
+email_body.attach(MIMEText(table_html, "html"))
+
+# Set the email headers
+email_body["From"] = sender_email
+email_body["To"] = receiver_email
+email_body["Subject"] = subject
+
+# Connect to the SMTP server
+smtp_server = "smtp.gmail.com"  # Example for Gmail
+smtp_port = 587  # Gmail uses port 587 for TLS
+smtp_username = sender_email
+
+try:
+    # Establish a connection to the SMTP server
+    server = smtplib.SMTP(smtp_server, smtp_port)
+    server.starttls()  # Upgrade the connection to secure (TLS)
+
+    # Log in to your email account
+    server.login(smtp_username, password)
+
+    # Send the email
+    server.sendmail(sender_email, receiver_email, email_body.as_string())
+
+    # Close the SMTP server connection
+    server.quit()
+    print("Email with table data sent to yourself successfully!")
+
+except Exception as e:
+    print(f"An error occurred: {str(e)}")
+
 
 # printing out so make sure we can see the data in the github actions pipeline 
 print(dataTable.get_formatted_string)
