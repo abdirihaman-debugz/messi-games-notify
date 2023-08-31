@@ -32,11 +32,11 @@ while(True):
     try:
         # After a while of scraping and looking this was the smartest way or laziest way to iterate over the data to get the game time, game day, and team they are facing
         trdata = "tr["+str(i)+"]"
-        teamName = dom.xpath('//*[@id="table-1"]/tbody/' +trdata+ '/td[2]/div/a[2]')[0].text.strip()
+        teamName = dom.xpath('//*[@id="table-0"]/tbody/' +trdata+ '/td[2]/div/a[2]')[0].text.strip()
         dataFromXpath.append(teamName)
-        gameDate = dom.xpath('//*[@id="table-1"]/tbody/' +trdata+  '/td[1]/div/text()')[0].strip()
+        gameDate = dom.xpath('//*[@id="table-0"]/tbody/' +trdata+  '/td[1]/div/text()')[0].strip()
         dataFromXpath.append(gameDate)
-        gameTime = dom.xpath('//*[@id="table-1"]/tbody/' +trdata+ '/td[3]/div/a/text()')[0].strip()
+        gameTime = dom.xpath('//*[@id="table-0"]/tbody/' +trdata+ '/td[3]/div/a/text()')[0].strip()
         dataFromXpath.append(to_local_datetime(gameTime))        
         i+=1
     except IndexError:
