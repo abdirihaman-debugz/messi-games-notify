@@ -11,10 +11,11 @@ import os
 month = datetime.now().strftime("%B")
 
 # Fox sports website that pull the inter-miami team schedule (when I scrape I just get the current months schedule)
-URL  = "https://www.foxsports.com/soccer/inter-miami-cf-team-schedule?month=" + month
+URL1  = "https://www.foxsports.com/soccer/inter-miami-cf-team-schedule?month=" + month
+URL2 = "https://www.foxsports.com/soccer/inter-miami-cf-team-schedule"
 
 # Mandatory libraries I am using to extract the html & dom tree so I can use look for specific Xpaths
-page = requests.get(URL)
+page = requests.get(URL2)
 soup = BeautifulSoup(page.text, "html.parser")
 dom =  etree.HTML(str(soup))
 
